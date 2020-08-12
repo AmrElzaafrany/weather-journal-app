@@ -1,7 +1,7 @@
 /* Global Variables */
 
 const baseURL = "https://api.openweathermap.org/data/2.5/weather?zip=";
-const apiKey = "98955c5e32bba4ba6b565b90f92c1f68";
+const apiKey = "98955c5e32bba4ba6b565b90f92c1f68&units=imperial";
 
 let button = document.querySelector('#generate');
 
@@ -16,7 +16,7 @@ let weather = async function (url) {
 
 
 const generator = async function () {
-    await updateUI();
+
 
     const zip = document.querySelector("#zip").value;
     const url = baseURL + zip + "&appid=" + apiKey;
@@ -31,14 +31,19 @@ const generator = async function () {
     let d = new Date();
     let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 
+
+
     let data = {
         date: newDate,
         temp: temp,
         content: content
     }
-    console.log(data);
 
-    await updateUI(data);
+    // await updateUI();
+
+    await postData("/projectData", data);
+   await updateUI()
+
 }
 
 const getData = async function (url) {
@@ -73,19 +78,13 @@ const updateUI = async function (data = null) {
     const dateDiv = document.getElementById('date');
     const tempDiv = document.getElementById('temp');
     const contentDiv = document.getElementById('content');
-    let UI_Data;
-    //Get data from owr own server
-    if (data == null) {
-        UI_Data = await getData("/projectData");
-    } else {
-        UI_Data = await postData("/projectData", data);
-    }
-    console.log(UI_Data);
+    let UI_Data = await getData("/projectData");
+
 
     //Updating the UI
-    dateDiv.innerText = UI_Data.date;
-    tempDiv.innerText = UI_Data.temp;
-    contentDiv.innerText = UI_Data.content;
+    dateDiv.innerHTML = UI_Data.date;
+    tempDiv.innerHTML = UI_Data.temp;
+    contentDiv.innerHTML = UI_Data.content;
 }
 
 
